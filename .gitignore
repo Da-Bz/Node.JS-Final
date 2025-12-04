@@ -1,17 +1,17 @@
-# Dependencies
+# Dependencias
 /node_modules
 
-# Environment Variables
+# Archivos de entorno
 .env
 
-# Firebase Service Account Key
-/config/serviceAccountKey.json
+# Archivos de configuración sensibles
+serviceAccountKey.json
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Build output
-/dist
-/build
+# Metadatos del editor
+.vscode/
+.idea/
