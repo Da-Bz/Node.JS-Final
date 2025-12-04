@@ -1,6 +1,6 @@
 {
   "name": "node-express-api",
-  "description": "Simple api sample in Node",
+  "description": "Json del Proyecto B-End Node de Damian Blanez",
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
@@ -9,10 +9,17 @@
     "dev": "nodemon index.js",
     "start": "node index.js"
   },
-  "author": "Google LLC",
+  "author": "Damian",
   "license": "Apache-2.0",
   "dependencies": {
-    "express": "^4.21.2"
+    "body-parser": "^2.2.1",
+    "cookie-session": "^2.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "firebase": "^12.6.0",
+    "firebase-admin": "^13.6.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
