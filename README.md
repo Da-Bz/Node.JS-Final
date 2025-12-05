@@ -50,3 +50,68 @@ JWT_SECRET=tu_clave_secreta_super_dificil
 4. Ejecutar el servidor de desarrollo
 npm run dev
 El servidor se iniciará en http://localhost:3000.
+
+🧪 Cómo Probar la API
+Puedes usar una herramienta como Postman o Insomnia para probar los endpoints. El servidor se ejecuta en `http://localhost:3000`.
+
+1️⃣ Registrar un nuevo usuario
+- **Método:** `POST`
+- **URL:** `/api/auth/register`
+- **Body (raw, JSON):**
+  ```json
+  {
+    "email": "test@example.com",
+    "password": "password123"
+  }
+  ```
+
+2️⃣ Iniciar sesión para obtener el Token
+- **Método:** `POST`
+- **URL:** `/api/auth/login`
+- **Body (raw, JSON):**
+  ```json
+  {
+    "email": "test@example.com",
+    "password": "password123"
+  }
+  ```
+- **Respuesta:** Copia el `token` que se devuelve en la respuesta.
+
+3️⃣ Crear un producto (Ruta protegida)
+- **Método:** `POST`
+- **URL:** `/api/products/create`
+- **Headers:**
+    - `Authorization`: `Bearer TU_TOKEN_AQUI`
+- **Body (raw, JSON):**
+  ```json
+  {
+    "nombre": "Laptop Pro",
+    "precio": 1200,
+    "stock": 15,
+    "descripcion": "Una laptop potente para profesionales",
+    "categoria": "Electrónica"
+  }
+  ```
+
+4️⃣ Ver todos los productos (Ruta pública)
+- **Método:** `GET`
+- **URL:** `/api/products`
+
+5️⃣ Editar un producto (Ruta protegida)
+- **Método:** `PUT`
+- **URL:** `/api/products/:id` (reemplaza `:id` con el ID de un producto real)
+- **Headers:**
+    - `Authorization`: `Bearer TU_TOKEN_AQUI`
+- **Body (raw, JSON):**
+  ```json
+  {
+    "precio": 1150,
+    "stock": 10
+  }
+  ```
+
+6️⃣ Eliminar un producto (Ruta protegida)
+- **Método:** `DELETE`
+- **URL:** `/api/products/:id` (reemplaza `:id` con el ID de un producto real)
+- **Headers:**
+    - `Authorization`: `Bearer TU_TOKEN_AQUI`
