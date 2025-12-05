@@ -1,69 +1,40 @@
 import express from 'express';
-import 'dotenv/config';
 import cors from 'cors';
+import bodyParser from 'body-parser';
+import 'dotenv/config';
+import path from 'path';
 
-// --- INICIALIZACIÓN DE FIREBASE ---
-// Importa el archivo de configuración para asegurar que Firebase se inicialice al inicio.
-import './config/firebase.config.js';
-// --------------------------------
-
-// Importar enrutadores
-import authRouter from './routes/auth.routes.js';
-import productsRouter from './routes/products.routes.js';
-
-// Importar middleware de manejo de errores
-import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
+import productRoutes from './routes/products.routes.js';
+import authRoutes from './routes/auth.routes.js';
+import errorMiddleware from './middleware/error.middleware.js';
+import AppError from './utils/AppError.js';
 
 const app = express();
 
-// Habilitar CORS para todas las rutas y orígenes
+// Middlewares esenciales
 app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
-// Middleware para analizar cuerpos de solicitud JSON
-app.use(express.json());
-
-// Ruta principal
+// Ruta principal que sirve el archivo HTML estático.
 app.get('/', (req, res) => {
-  const name = process.env.NAME || 'Mundo';
-  res.send(`¡Hola ${name}!`);
+  res.sendFile(path.resolve('public', 'index.html'));
 });
 
-// === Rutas de la API ===
-// Usar el enrutador de autenticación para todas las solicitudes /api/auth
-app.use('/api/auth', authRouter);
-// Usar el enrutador de productos para todas las solicitudes /api/products
-app.use('/api/products', productsRouter);
+// Rutas de la API
+app.use('/api/products', productRoutes);
+app.use('/auth', authRoutes);
 
-
-// === Manejo de Errores ===
-// Capturar todas las rutas no definidas
-app.use(notFoundHandler);
-// Manejador de errores centralizado
-app.use(errorHandler);
-
-// Función para obtener el puerto de los argumentos de la línea de comandos
-const getPortFromArgs = () => {
-  const portArg = process.argv.find(arg => arg.startsWith('--port'));
-  if (portArg) {
-    const portValue = portArg.split('=')[1] || process.argv[process.argv.indexOf(portArg) + 1];
-    return parseInt(portValue, 10);
-  }
-  return null;
-};
-
-const port = getPortFromArgs() || parseInt(process.env.PORT) || 3001;
-
-const server = app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+// Middleware para manejar rutas no encontradas (404)
+app.use((req, res, next) => {
+  next(new AppError(`No se pudo encontrar ${req.originalUrl} en este servidor.`, 404));
 });
 
-const gracefulShutdown = () => {
-  console.log('Cerrando el servidor de forma elegante...');
-  server.close(() => {
-    console.log('Servidor cerrado.');
-    process.exit(0);
-  });
-};
+// Middleware global para el manejo de errores.
+app.use(errorMiddleware);
 
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});

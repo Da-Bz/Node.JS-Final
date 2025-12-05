@@ -1,14 +1,14 @@
-import { Router } from 'express';
-import { login, register } from '../controllers/auth.controller.js';
+import express from 'express';
+import { register, login } from '../controllers/auth.controller.js';
 
-const router = Router();
+const router = express.Router();
 
-// Ruta para el inicio de sesión del usuario
-// POST /api/auth/login
-router.post('/login', login);
-
-// Ruta para el registro de usuarios
-// POST /api/auth/register
+// Ruta para registrar un nuevo usuario
+// POST /auth/register
 router.post('/register', register);
+
+// Ruta para iniciar sesión
+// POST /auth/login
+router.post('/login', login);
 
 export default router;

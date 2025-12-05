@@ -1,40 +1,67 @@
-import * as ProductModel from '../models/product.model.js';
+import { db } from '../config/firebase.config.js';
+import { collection, getDocs, doc, getDoc, addDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { ProductModel } from '../models/product.model.js';
 import AppError from '../utils/AppError.js';
 
-// Servicio para obtener todos los productos
+// Usando el nombre de la colección del ejemplo de tu profesor
+const productsCollection = collection(db, 'productos');
+
+// Función renombrada para coincidir con el ejemplo del profesor
 export const getAllProducts = async () => {
-    // Llama directamente a la función del modelo y devuelve el resultado
-    return await ProductModel.getAll();
+  const querySnapshot = await getDocs(productsCollection);
+  if (querySnapshot.empty) {
+    return [];
+  }
+  return querySnapshot.docs.map(doc => new ProductModel({ id: doc.id, ...doc.data() }));
 };
 
-// Servicio para obtener un solo producto por ID
+// Función renombrada
 export const getProductById = async (id) => {
-    const product = await ProductModel.getById(id);
-    if (!product) {
-        // Si no se encuentra ningún producto, lanza un error específico para el controlador
-        throw new AppError('Producto no encontrado', 404);
-    }
-    return product;
+  const docRef = doc(db, 'productos', id);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    throw new AppError('Producto no encontrado', 404); // Se mantuvo el manejo de errores robusto
+  }
+
+  return new ProductModel({ id: docSnap.id, ...docSnap.data() });
 };
 
-// Servicio para crear un nuevo producto
+// Función renombrada y se agregó conversión explícita a Número
 export const createProduct = async (productData) => {
-    // Aquí podrías agregar una lógica de negocio más compleja si fuera necesario
-    // Por ahora, solo validamos que tenemos los campos requeridos
-    const { name, description, price, stock } = productData;
-    if (!name || !description || price === undefined || stock === undefined) {
-        throw new AppError('Faltan campos obligatorios: nombre, descripción, precio, stock', 400);
-    }
+  const { nombre, precio, stock, descripcion, categoria } = productData;
+  if (!nombre || !precio || !stock || !descripcion || !categoria) {
+      throw new AppError('Faltan campos obligatorios del producto', 400);
+  }
 
-    return await ProductModel.create({ name, description, price, stock });
+  const productToSave = {
+      nombre,
+      precio: Number(precio),
+      stock: Number(stock),
+      descripcion,
+      categoria
+  }
+
+  const docRef = await addDoc(productsCollection, productToSave);
+  return docRef.id;
 };
 
-// Servicio para eliminar un producto
-export const deleteProduct = async (id) => {
-    const result = await ProductModel.remove(id);
-    if (!result) {
-        // Si el modelo devuelve nulo, significa que el producto no existía
-        throw new AppError('Producto no encontrado', 404);
+// Función renombrada
+export const updateProduct = async (id, updateData) => {
+    const docRef = doc(db, 'productos', id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+        throw new AppError('Producto no encontrado para actualizar', 404);
     }
-    return result;
+
+    await updateDoc(docRef, updateData);
+};
+
+// Función renombrada
+export const deleteProduct = async (id) => {
+  const docRef = doc(db, 'productos', id);
+  // Podemos verificar si existe antes de eliminar, pero Firestore no arroja error si no existe.
+  // Por simplicidad y eficiencia, podemos simplemente llamar a delete.
+  await deleteDoc(docRef);
 };

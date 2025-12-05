@@ -1,46 +1,48 @@
-import * as ProductService from '../services/product.service.js';
+import * as productService from '../services/product.service.js';
+import AppError from '../utils/AppError.js';
 
-// Controlador para obtener todos los productos
-export const getAllProducts = async (req, res, next) => {
-    try {
-        const products = await ProductService.getAllProducts();
-        res.json(products);
-    } catch (error) {
-        next(error); // Pasar el error al manejador de errores centralizado
-    }
+// Nombres de los controladores alineados con las rutas para mayor claridad
+export const getProducts = async (req, res, next) => {
+  try {
+    const products = await productService.getAllProducts(); // Llamada a la función actualizada
+    res.json({ success: true, data: products });
+  } catch (error) {
+    next(new AppError(error.message, 500));
+  }
 };
 
-// Controlador para obtener un solo producto por su ID
-export const getProductById = async (req, res, next) => {
+export const getProduct = async (req, res, next) => {
+  try {
+    const product = await productService.getProductById(req.params.id); // Llamada a la función actualizada
+    res.json({ success: true, data: product });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createNewProduct = async (req, res, next) => {
+  try {
+    const newProductId = await productService.createProduct(req.body); // Llamada a la función actualizada
+    res.status(201).json({ success: true, message: 'Producto creado exitosamente', productId: newProductId });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateProductById = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const product = await ProductService.getProductById(id);
-        res.json(product);
+        await productService.updateProduct(req.params.id, req.body); // Llamada a la función actualizada
+        res.status(200).json({ success: true, message: 'Producto actualizado exitosamente' });
     } catch (error) {
         next(error);
     }
 };
 
-// Controlador para crear un nuevo producto
-export const createProduct = async (req, res, next) => {
-    try {
-        const productData = req.body;
-        const newProduct = await ProductService.createProduct(productData);
-        // Enviar un código de estado 201 para una creación exitosa
-        res.status(201).json(newProduct);
-    } catch (error) {
-        next(error);
-    }
-};
-
-// Controlador para eliminar un producto por su ID
-export const deleteProduct = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        await ProductService.deleteProduct(id);
-        // Enviar un código de estado 204 que indica éxito sin contenido para devolver
-        res.status(204).send();
-    } catch (error) {
-        next(error);
-    }
+export const deleteProductById = async (req, res, next) => {
+  try {
+    await productService.deleteProduct(req.params.id); // Llamada a la función actualizada
+    res.status(200).json({ success: true, message: 'Producto eliminado' });
+  } catch (error) {
+    next(new AppError(error.message, 500));
+  }
 };

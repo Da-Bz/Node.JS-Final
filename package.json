@@ -1,27 +1,22 @@
 {
   "name": "node-express-api",
-  "description": "Json del Proyecto B-End Node de Damian Blanez",
   "version": "1.0.0",
-  "private": true,
+  "description": "API para administrar productos de una tienda",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
     "start": "node index.js"
   },
-  "author": "Damian",
-  "license": "Apache-2.0",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "body-parser": "^2.2.1",
-    "cookie-session": "^2.1.0",
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "firebase": "^12.6.0",
-    "firebase-admin": "^13.6.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.1.0",
     "jsonwebtoken": "^9.0.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
   }
 }

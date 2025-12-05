@@ -1,26 +1,22 @@
 import { Router } from 'express';
-import {
-    getAllProducts,
-    getProductById,
-    createProduct,
-    deleteProduct
+import authMiddleware from '../middleware/auth.middleware.js';
+import { 
+    getProducts, 
+    getProduct, 
+    createNewProduct, 
+    updateProductById, 
+    deleteProductById 
 } from '../controllers/products.controller.js';
-import { protect } from '../middleware/auth.middleware.js';
 
 const router = Router();
 
-// --- Rutas de Productos ---
+// --- Rutas Públicas --- Cualquiera puede ver los productos
+router.get('/', getProducts);
+router.get('/:id', getProduct);
 
-// GET /api/products - Devuelve todos los productos (Público)
-router.get('/', getAllProducts);
-
-// GET /api/products/:id - Devuelve un solo producto por su ID (Público)
-router.get('/:id', getProductById);
-
-// POST /api/products - Crea un nuevo producto (Protegido)
-router.post('/', protect, createProduct);
-
-// DELETE /api/products/:id - Elimina un producto por su ID (Protegido)
-router.delete('/:id', protect, deleteProduct);
+// --- Rutas Protegidas --- Solo los usuarios autenticados pueden crear, actualizar y eliminar
+router.post('/crear', authMiddleware, createNewProduct);
+router.put('/:id', authMiddleware, updateProductById);
+router.delete('/:id', authMiddleware, deleteProductById);
 
 export default router;
