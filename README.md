@@ -51,6 +51,19 @@ JWT_SECRET=tu_clave_secreta_super_dificil
 npm run dev
 El servidor se iniciará en http://localhost:3000.
 
+**Nota:** Este proyecto no tiene configurado un script de `npm test`.
+
+🛑 Cómo Detener el Servidor
+Si necesitas detener el servidor manualmente, puedes seguir estos pasos:
+
+1. Busca los procesos de Node.js en la terminal:
+ps aux | grep node
+2. Identifica los PIDs (Process IDs) de los procesos relacionados con `nodemon` o `node index.js`.
+
+3. Detén los procesos usando sus PIDs:
+kill <PID1> <PID2>
+Reemplaza `<PID1>`, `<PID2>`, etc., con los números de los procesos que encontraste.
+
 🧪 Cómo Probar la API
 Puedes usar una herramienta como Postman o Insomnia para probar los endpoints. El servidor se ejecuta en `http://localhost:3000`.
 
